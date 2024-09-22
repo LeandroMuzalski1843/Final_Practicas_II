@@ -1,10 +1,12 @@
+import os
 import sys
 from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizeGrip
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore
-from views.agregarUsuarios import ClaseAgregarUsuario
-
+from views.agregarUsuario_Momentaneo import ClaseAgregarUsuarioMomentaneo
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QTimer
 
 
 class MainWindow(QMainWindow):   
@@ -13,7 +15,15 @@ class MainWindow(QMainWindow):
         # Cargar el archivo .ui que contiene la interfaz gráfica
         loadUi("ui\\menu.ui", self)
         
+        # Diccionario de descripciones de películas
+        self.descripciones_peliculas = {
+            0: "Descripcion",
+            1: "Descripción: Después de más de treinta años de servicio como uno de los mejores aviadores de la Marina, Pete ''Maverick'' Mitchell (Tom Cruise) está donde pertenece, superando los límites como un valiente piloto de pruebas y esquivando el avance de rango que lo dejaría en tierra..",
+            2: "Descripción:'Interstellar' narra la historia de Joseph Cooper, un granjero que trabajó como astronauta de la NASA, quien debe volver a colocarse su traje de viajero espacial para ir en un viaje casi sin retorno con el fin de salvar a la humanidad de la degradación ambiental que aqueja a la tierra",
+            3: "AVENGERS: ENDGAME está ambientada después de los catastróficos sucesos de Avengers: Infinity War, en los que Thanos eliminó deliberadamente a la mitad del universo al usar las gemas del infinito. Los que no se fueron, están desesperados por hacer algo (lo que sea) para traer de vuelta a sus seres queridos."
+        }
 
+        
         # Eliminar la barra de título de la ventana y ajustar la opacidad
         self.setWindowFlags(Qt.FramelessWindowHint) 
         self.setWindowOpacity(1.0)  # Opacidad completa (1.0 es totalmente opaco)
@@ -55,9 +65,66 @@ class MainWindow(QMainWindow):
 
         # Asignar el evento al botón del menú lateral para animarlo
         self.bt_menu.clicked.connect(self.mover_menu)
+        
 
 
+        #Imagen en la cartelera y selección de película
+        self.comboBox_cartelera.currentIndexChanged.connect(self.display_image)
+        self.comboBox_cartelera.currentIndexChanged.connect(self.cambiar_pelicula)
+        self.comboBox_cartelera.setCurrentIndex(0)
+        self.display_image(0)
+        # Actualizar descripción
+        self.comboBox_cartelera.currentIndexChanged.connect(lambda: self.actualizar_descripcion(self.comboBox_cartelera.currentIndex()))  
+        
+        
 
+
+#==============================================================================================================
+    #Comprar pelis
+
+    #Cambiar imagen
+    def cambiar_pelicula(self):
+        """Cambia la película seleccionada en la cartelera."""
+        pelicula_actual = self.comboBox_cartelera.currentText()
+        print(f"Cambiando a película: {pelicula_actual}")
+        # Aquí puedes agregar la lógica para actualizar la interfaz o realizar las acciones necesarias
+
+    def display_image(self, index):
+        images = {
+            0: os.path.join(os.getcwd(), "img", "download.jpg"),
+            1: os.path.join(os.getcwd(), "img", "descarga (1).jpeg"),
+            2: os.path.join(os.getcwd(), "img", "descarga (2).jpeg"),
+            3: os.path.join(os.getcwd(), "img", "descarga.jpeg")
+        }
+
+        image_path = images.get(index, "")
+        if image_path:
+            pixmap = QPixmap(image_path)
+            if not pixmap.isNull():  # Verificar que la imagen se cargó correctamente
+                # Ajustar la imagen para que ocupe el 100% del QLabel (sin mantener la relación de aspecto)
+                self.label_imagenCartelera.setPixmap(pixmap.scaled(
+                    self.label_imagenCartelera.size(),  # Tamaño del QLabel
+                    Qt.IgnoreAspectRatio,  # Ignorar la relación de aspecto para llenar el QLabel
+                    Qt.SmoothTransformation  # Transformación suave para una mejor calidad
+                ))
+                self.label_imagenCartelera.setAlignment(Qt.AlignCenter)  # Centrar la imagen en el label
+            else:
+                self.label_imagenCartelera.clear()
+                self.label_imagenCartelera.setText("Error: No se pudo cargar la imagen.")
+        else:
+            self.label_imagenCartelera.clear()
+            self.label_imagenCartelera.setText("No hay imagen seleccionada.")
+    
+    def actualizar_descripcion(self, index):
+        descripcion = self.descripciones_peliculas.get(index, "Descripción no disponible.")
+        self.textBrowser_descripcion.setText(descripcion)
+    
+    #==============================================================================================================
+    # Configuracion Pagina Usuario
+
+    def abrir_agregar_usuario(self):
+        self.agregar_usuario = ClaseAgregarUsuarioMomentaneo()
+        self.agregar_usuario.show()
 
 
     #==============================================================================================================
@@ -91,8 +158,10 @@ class MainWindow(QMainWindow):
         self.animacion.setStartValue(width)  # Valor inicial (ancho actual)
         self.animacion.setEndValue(extender)  # Valor final (colapsado o extendido)
         self.animacion.setEasingCurve(QtCore.QEasingCurve.InOutQuart)  # Tipo de animación
+
         self.animacion.start()  # Iniciar la animación
 
+    
     ## SizeGrip: Reposicionar el grip cuando la ventana se redimensiona
     def resizeEvent(self, event):
         rect = self.rect()  # Obtener el rectángulo actual de la ventana
@@ -115,18 +184,7 @@ class MainWindow(QMainWindow):
         else:
             self.showNormal()
 
-    #==============================================================================================================
-
-
-
-
-    #==============================================================================================================
-    # Configuracion Pagina Usuario
-
-    def abrir_agregar_usuario(self):
-        self.agregar_usuario = ClaseAgregarUsuario()
-        self.agregar_usuario.show()
-
+    
 
 def main():
     app = QApplication(sys.argv)  
@@ -138,4 +196,3 @@ if __name__ == "__main__":
     main()
 
     
-
