@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from views.principalAdmin import MainWindow  
 from views.principalUser import MainWindowUser
+from PyQt5.QtCore import Qt
 from error.logger import log  
 from PyQt5.uic import loadUi 
 from views.session import UserSession  
@@ -15,6 +16,11 @@ class ClaseLogin(QMainWindow):
             # Cargar el diseño de la interfaz de usuario
             loadUi("ui\\login.ui", self)
             self.setup()
+
+            # Eliminar la barra de título de la ventana y ajustar la opacidad
+            self.setWindowFlags(Qt.FramelessWindowHint) 
+            self.setWindowOpacity(1.0)  # Opacidad completa (1.0 es totalmente opaco)
+
         except FileNotFoundError as error:
             log(error, "error")  # Registrar el error en el log
             QMessageBox.critical(self, 'Error', 'El programa no pudo encontrar la pantalla de login. Consulte con el administrador.')
@@ -23,6 +29,7 @@ class ClaseLogin(QMainWindow):
     def setup(self):
         # Conectar el botón de aceptar con el método para procesar el login
         self.btn_aceptar.clicked.connect(self.aceptar_clicked)
+        self.btn_cancelar.clicked.connect(self.close)
 
     def aceptar_clicked(self):
         # Manejar el proceso de login
@@ -30,20 +37,32 @@ class ClaseLogin(QMainWindow):
         contrasena = self.lineEdit_Contrasenia.text()
 
         #Basico por editar
-        if nombre == "leo":
-            if contrasena == "123":
-                self.hide()
-                self.main_window = MainWindow()
-                self.main_window.show()
-        elif nombre == "juan":
-            if contrasena == "456":
-                self.hide()
-                self.main_window_user = MainWindowUser()
-                self.main_window_user.show()
-                
+        if len(nombre) < 1:
+            print("Error en el nombre de usuario")
+            QMessageBox.information(self,"Error","Debe ingresar el usuario",QMessageBox.Ok)
+        elif len(contrasena) < 1:
+            QMessageBox.information(self,"Error","Debe ingresar la contraseña",QMessageBox.Ok)
+        else:
+            if nombre == "leo":
+                if contrasena == "123":
+                    self.hide()
+                    self.main_window = MainWindow()
+                    self.main_window.show()
+                else:
+                    QMessageBox.warning(self,"Error","Contraseña incorrecta",QMessageBox.Ok)
+            elif nombre == "juan":
+                if contrasena == "456":
+                    self.hide()
+                    self.main_window_user = MainWindowUser()
+                    self.main_window_user.show()
+                else:
+                    QMessageBox.warning(self,"Error","Contraseña incorrecta",QMessageBox.Ok)
+            else:
+                QMessageBox.warning(self,"Error","Usuario incorrecta",QMessageBox.Ok)
 
-        #Corregir con el profe
-        #self.login()
+            
+        # Corregir con el profe
+        # self.login()
 
     def login(self):
         # Obtener los valores ingresados en los campos de email y contraseña

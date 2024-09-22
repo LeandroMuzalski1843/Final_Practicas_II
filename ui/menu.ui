@@ -602,7 +602,7 @@ QPushButton:hover {
           <number>0</number>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -612,7 +612,7 @@ QPushButton:hover {
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap>../../../../../Compu Anterior/Escritorio/Herramientas Portafolio/Iconos/download.jpg</pixmap>
+              <pixmap>../icons/download.jpg</pixmap>
              </property>
              <property name="scaledContents">
               <bool>false</bool>
