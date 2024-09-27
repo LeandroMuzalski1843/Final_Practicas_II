@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizeGrip
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore
-from views.agregarUsuarios import ClaseAgregarUsuario
+
 
 
 

@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizeGrip
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore
-from views.agregarUsuario_Momentaneo import ClaseAgregarUsuarioMomentaneo
+from views.agregarUsuario import AgregarUsuario
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTimer
 
@@ -123,7 +123,7 @@ class MainWindow(QMainWindow):
     # Configuracion Pagina Usuario
 
     def abrir_agregar_usuario(self):
-        self.agregar_usuario = ClaseAgregarUsuarioMomentaneo()
+        self.agregar_usuario = AgregarUsuario()
         self.agregar_usuario.show()
 
 

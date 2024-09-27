@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from views.login import ClaseLogin  # Importar la clase de login desde el archivo login.py
+from views.login import ClaseLogin 
 
 def main():
     app = QApplication(sys.argv)
