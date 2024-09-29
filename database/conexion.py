@@ -36,3 +36,14 @@ class Database:
             raise Exception(f"Error durante la consulta: {e}")
         finally:
             self.desconeccion()
+
+    def obtener_usuarios(self):
+        """Obtiene todos los usuarios de la base de datos."""
+        try:
+            self.conneccion()
+            self.cursor.execute("SELECT * FROM usuarios") 
+            return self.cursor.fetchall()
+        except Error as e:
+            raise Exception(f"Error durante la consulta: {e}")
+        finally:
+            self.desconeccion()

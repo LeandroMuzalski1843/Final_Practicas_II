@@ -1,12 +1,15 @@
 import os
 import sys
 from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
-from PyQt5.QtWidgets import QApplication, QMainWindow, QSizeGrip
+from PyQt5.QtWidgets import QApplication, QMainWindow, QSizeGrip,QMessageBox,QTableWidgetItem
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore
 from views.agregarUsuario import AgregarUsuario
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTimer
+from views.session import UserSession
+from database.conexion import Database
+from error.logger import log
 
 
 class MainWindow(QMainWindow):   
@@ -50,7 +53,21 @@ class MainWindow(QMainWindow):
         self.bt_cuatro.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_cuatro))			
         self.bt_cinco.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_cinco))	
 
-        
+
+        #Saludo de bienvenida
+        session = UserSession()
+        saludo = session.username if session.username else "Usuario"  # Valor por defecto "Usuario"
+
+        # Acortar el nombre si es demasiado largo (máximo 10 caracteres)
+        max_length = 10
+        if len(saludo) > max_length:
+            saludo = saludo[:max_length] + "..."  # Truncar el nombre y agregar "..."
+
+        # Actualizar el QLabel con el saludo
+        self.label_bienvenida.setText(f"Hola, {saludo}!")
+
+
+
         #Configuracion botones pagina Usuarios
         self.bt_agregar_usuario.clicked.connect(self.abrir_agregar_usuario)
 
@@ -76,7 +93,8 @@ class MainWindow(QMainWindow):
         # Actualizar descripción
         self.comboBox_cartelera.currentIndexChanged.connect(lambda: self.actualizar_descripcion(self.comboBox_cartelera.currentIndex()))  
         
-        
+        # Llenar tabla de usuarios al iniciar
+        self.cargar_usuarios_en_tabla()
 
 
 #==============================================================================================================
@@ -125,6 +143,25 @@ class MainWindow(QMainWindow):
     def abrir_agregar_usuario(self):
         self.agregar_usuario = AgregarUsuario()
         self.agregar_usuario.show()
+
+    #==============================================================================================================
+    # Configuracion Pagina Usuarios
+    
+    def cargar_usuarios_en_tabla(self):
+        """Carga los usuarios de la base de datos y los muestra en tableWidget_usuarios."""
+        database = Database()
+        try:
+            usuarios = database.obtener_usuarios()
+            print(usuarios)
+            self.tableWidget_usuarios.setRowCount(0)
+            for row_number, row_data in enumerate(usuarios):
+                self.tableWidget_usuarios.insertRow(row_number)
+                for column_number, data in enumerate(row_data):
+                    self.tableWidget_usuarios.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        except Exception as e:
+            log(e, "error")
+            QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de usuarios.')
+        
 
 
     #==============================================================================================================

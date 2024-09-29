@@ -38,14 +38,27 @@ class ClaseLogin(QMainWindow):
         user = self.lineEdit_Usuario.text()
         password = self.lineEdit_Contrasenia.text()
 
+        # Crea una sesión de usuario y almacena el nombre y el correo.
+        
+
         # Conexión y validación con la base de datos
         db = Database()
         try:
             resultado = db.obtener_usuario(user,password)
-            print(resultado)
-
             if resultado:
-                pass
+                grupo=resultado[3]
+                print(grupo)
+                if grupo=="Administrador":
+                    # Crea la sesión del usuario.
+                    session = UserSession()
+                    session.set_user(user, grupo)
+
+                    self.hide()
+                    self.main_window = MainWindow()
+                    self.main_window.show() 
+                else:
+                    pass
+                
             else:
                 QMessageBox.warning(self, 'Error', 'Datos Incorectos.')
 
