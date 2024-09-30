@@ -43,3 +43,6 @@
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-09-28T21:36:06Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-09-28T21:36:45Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-09-28T21:36:45Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar usuario: Not enough parameters for the SQL statement", "severity": "ERROR", "timestamp": "2024-09-30T15:12:25Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar usuario: Not enough parameters for the SQL statement", "severity": "ERROR", "timestamp": "2024-09-30T15:14:16Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'AgregarUsuario' object has no attribute 'txtNombreUsuario'", "severity": "ERROR", "timestamp": "2024-09-30T15:16:34Z"}

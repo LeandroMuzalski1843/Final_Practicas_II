@@ -95,6 +95,9 @@ class MainWindow(QMainWindow):
         
         # Llenar tabla de usuarios al iniciar
         self.cargar_usuarios_en_tabla()
+        # Conectar el botón de actualizar con el método cargar_usuarios_en_tabla
+        self.btn_actualizarUsuario.clicked.connect(self.cargar_usuarios_en_tabla)
+
 
 
 #==============================================================================================================

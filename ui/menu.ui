@@ -792,6 +792,26 @@ QPushButton:hover {
                        </spacer>
                       </item>
                       <item>
+                       <widget class="QPushButton" name="btn_actualizarUsuario">
+                        <property name="text">
+                         <string>Actualizar</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_4">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
                        <widget class="QPushButton" name="pushButton_7">
                         <property name="text">
                          <string>Eliminar</string>

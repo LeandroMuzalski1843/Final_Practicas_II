@@ -47,3 +47,15 @@ class Database:
             raise Exception(f"Error durante la consulta: {e}")
         finally:
             self.desconeccion()
+    
+    def insertar_usuario(self, nombre, contrasena, rol):
+        """Inserta un nuevo usuario con un rol en la base de datos."""
+        try:
+            self.conneccion()
+            query = "INSERT INTO usuarios (NombreUsuario, Contrasena,Grupo) VALUES (%s, %s, %s)"
+            self.cursor.execute(query, (nombre, contrasena, rol))
+            self.db.commit()  # Confirmar los cambios
+        except Error as e:
+            raise Exception(f"Error al insertar usuario: {e}")
+        finally:
+            self.desconeccion()
