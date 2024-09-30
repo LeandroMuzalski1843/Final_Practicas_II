@@ -160,7 +160,6 @@ class MainWindow(QMainWindow):
         database = Database()
         try:
             usuarios = database.obtener_usuarios()
-            print(usuarios)
             self.tableWidget_usuarios.setRowCount(0)
             for row_number, row_data in enumerate(usuarios):
                 self.tableWidget_usuarios.insertRow(row_number)

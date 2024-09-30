@@ -3,6 +3,7 @@ from mysql.connector import MySQLConnection, Error
 from PyQt5.QtWidgets import QMessageBox
 from database.python_mysql_config import config_db
 from error.logger import log  
+from datetime import datetime
 
 class Database:
     def __init__(self):
@@ -33,6 +34,7 @@ class Database:
             self.cursor.execute('SELECT * FROM usuarios WHERE NombreUsuario = %s AND Contrasena = %s', (nombre, contrasena))
             return self.cursor.fetchone()
         except Error as e:
+            log(e, "error")
             raise Exception(f"Error durante la consulta: {e}")
         finally:
             self.desconeccion()
@@ -44,18 +46,20 @@ class Database:
             self.cursor.execute("SELECT * FROM usuarios") 
             return self.cursor.fetchall()
         except Error as e:
+            log(e, "error")
             raise Exception(f"Error durante la consulta: {e}")
         finally:
             self.desconeccion()
     
-    def insertar_usuario(self, nombre, contrasena, rol):
+    def insertar_usuario(self, nombre, contrasena, rol,feha_creacion):
         """Inserta un nuevo usuario con un rol en la base de datos."""
         try:
             self.conneccion()
-            query = "INSERT INTO usuarios (NombreUsuario, Contrasena,Grupo) VALUES (%s, %s, %s)"
-            self.cursor.execute(query, (nombre, contrasena, rol))
-            self.db.commit()  # Confirmar los cambios
+            query = "INSERT INTO usuarios (NombreUsuario, Contrasena,Grupo,FechaCreacion) VALUES (%s, %s, %s,%s)"
+            self.cursor.execute(query, (nombre, contrasena, rol,feha_creacion))
+            self.db.commit()  
         except Error as e:
+            log(e, "error")
             raise Exception(f"Error al insertar usuario: {e}")
         finally:
             self.desconeccion()
@@ -66,8 +70,23 @@ class Database:
             self.conneccion()
             query = "DELETE FROM usuarios WHERE IdUsuarios = %s"
             self.cursor.execute(query, (user_id,))
-            self.db.commit()  # Confirmar los cambios
+            self.db.commit()  
         except Error as e:
+            log(e, "error")
             raise Exception(f"Error al eliminar usuario: {e}")
         finally:
             self.desconeccion()
+
+    def actualizar_ultimo_acceso(self, user_id):
+        """Actualiza el último acceso del usuario en la base de datos."""
+        try:
+            self.conneccion()
+            query = "UPDATE usuarios SET FechaUltimoAcceso = %s WHERE IdUsuarios = %s"
+            self.cursor.execute(query, (datetime.now(), user_id))
+            self.db.commit()  
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al eliminar usuario: {e}")
+        finally:
+            self.desconeccion()
+        

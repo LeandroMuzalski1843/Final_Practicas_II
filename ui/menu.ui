@@ -733,7 +733,7 @@ QPushButton:hover {
                       </column>
                       <column>
                        <property name="text">
-                        <string>Fecha_Mod.</string>
+                        <string>Fecha_Modificacion</string>
                        </property>
                       </column>
                       <column>

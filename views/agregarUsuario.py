@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from database.conexion import Database
 from error.logger import log
+from datetime import datetime 
 
 class AgregarUsuario(QMainWindow):   
     def __init__(self, parent=None):
@@ -24,14 +25,14 @@ class AgregarUsuario(QMainWindow):
         # Requisitos: al menos 8 caracteres
         if len(contrasena) < 8:
             return False
-        # Puedes añadir más validaciones como la presencia de números, caracteres especiales, etc.
         return True
     
     def agregar_usuario(self):
         """Obtiene los datos del formulario y los inserta en la base de datos."""
         nombre = self.lineEdit_Nombre.text()
         contrasena = self.lineEdit_Contrasenia.text()
-        rol = self.comboBoxUsuario.currentText()  # Obtener el rol seleccionado
+        rol = self.comboBoxUsuario.currentText() 
+        fecha_creacion = datetime.now()
 
         if not nombre:
             QMessageBox.warning(self, 'Advertencia', 'El campo de nombre de usuario es obligatorio.')
@@ -47,7 +48,7 @@ class AgregarUsuario(QMainWindow):
         # Insertar usuario en la base de datos
         try:
             db = Database()
-            db.insertar_usuario(nombre, contrasena, rol)
+            db.insertar_usuario(nombre, contrasena, rol,fecha_creacion)
             QMessageBox.information(self, 'Éxito', 'Usuario agregado correctamente.')
 
             self.close()

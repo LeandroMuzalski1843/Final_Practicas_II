@@ -45,6 +45,7 @@ class ClaseLogin(QMainWindow):
         db = Database()
         try:
             resultado = db.obtener_usuario(user,password)
+            id_user=resultado[0]
             if resultado:
                 grupo=resultado[3]
                 print(grupo)
@@ -52,6 +53,7 @@ class ClaseLogin(QMainWindow):
                     # Crea la sesión del usuario.
                     session = UserSession()
                     session.set_user(user, grupo)
+                    db.actualizar_ultimo_acceso(id_user)
 
                     self.hide()
                     self.main_window = MainWindow()
