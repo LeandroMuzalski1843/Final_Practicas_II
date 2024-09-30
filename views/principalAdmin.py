@@ -10,7 +10,7 @@ from PyQt5.QtCore import QTimer
 from views.session import UserSession
 from database.conexion import Database
 from error.logger import log
-
+from views.eliminarUsuario import EliminarUsuario
 
 class MainWindow(QMainWindow):   
     def __init__(self, parent=None):
@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
 
         #Configuracion botones pagina Usuarios
         self.bt_agregar_usuario.clicked.connect(self.abrir_agregar_usuario)
+        self.btn_eliminar_usuario.clicked.connect(self.abrir_eliminar_usuarios)
 
         # Control de los botones de la barra de títulos (minimizar, maximizar/restaurar, cerrar)
         self.bt_minimizar.clicked.connect(self.control_bt_minimizar)		
@@ -146,6 +147,10 @@ class MainWindow(QMainWindow):
     def abrir_agregar_usuario(self):
         self.agregar_usuario = AgregarUsuario()
         self.agregar_usuario.show()
+    
+    def abrir_eliminar_usuarios(self):
+        self.eliminar_usuario = EliminarUsuario()
+        self.eliminar_usuario.show()
 
     #==============================================================================================================
     # Configuracion Pagina Usuarios

@@ -812,7 +812,7 @@ QPushButton:hover {
                        </spacer>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton_7">
+                       <widget class="QPushButton" name="btn_eliminar_usuario">
                         <property name="text">
                          <string>Eliminar</string>
                         </property>

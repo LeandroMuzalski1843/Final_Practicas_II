@@ -13,6 +13,8 @@ class AgregarUsuario(QMainWindow):
 
         # Conectar el botón de guardar a la función para agregar usuario
         self.btnAceptar_3.clicked.connect(self.agregar_usuario)
+        self.btnCancelar_3.clicked.connect(self.close)
+
 
         # Configurar el valor por defecto del comboBox
         self.comboBoxUsuario.setCurrentText("Administrador")

@@ -59,3 +59,15 @@ class Database:
             raise Exception(f"Error al insertar usuario: {e}")
         finally:
             self.desconeccion()
+
+    def eliminar_usuario(self, user_id):
+        """Elimina un usuario de la base de datos por su ID."""
+        try:
+            self.conneccion()
+            query = "DELETE FROM usuarios WHERE IdUsuarios = %s"
+            self.cursor.execute(query, (user_id,))
+            self.db.commit()  # Confirmar los cambios
+        except Error as e:
+            raise Exception(f"Error al eliminar usuario: {e}")
+        finally:
+            self.desconeccion()
