@@ -26,6 +26,19 @@ class Database:
             self.cursor.close()
         if self.db and self.db.is_connected():
             self.db.close()
+    
+    def obtener_usuario_por_id(self, user_id):
+        """Obtiene el usuario por su ID."""
+        try:
+            self.conneccion()
+            self.cursor.execute('SELECT * FROM usuarios WHERE IdUsuarios = %s', (user_id,))
+            return self.cursor.fetchone()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error durante la consulta: {e}")
+        finally:
+            self.desconeccion()
+
 
     def obtener_usuario(self, nombre,contrasena):
         """Obtiene el usuario """
@@ -89,4 +102,20 @@ class Database:
             raise Exception(f"Error al eliminar usuario: {e}")
         finally:
             self.desconeccion()
-        
+    
+    def modificar_usuario(self, user_id, nuevo_nombre, nueva_contrasena, nuevo_rol, fecha_modificacion):
+        """Modifica los datos de un usuario en la base de datos."""
+        try:
+            self.conneccion()  
+            query = """UPDATE usuarios 
+                    SET NombreUsuario = %s, Contrasena = %s, Grupo = %s, FechaModificacion = %s
+                    WHERE IdUsuarios = %s"""
+            self.cursor.execute(query, (nuevo_nombre, nueva_contrasena, nuevo_rol, fecha_modificacion, user_id))
+            self.db.commit()
+            
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al modificar usuario: {e}")
+            
+        finally:
+            self.desconeccion() 

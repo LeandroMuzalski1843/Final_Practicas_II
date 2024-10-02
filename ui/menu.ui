@@ -772,7 +772,7 @@ QPushButton:hover {
                        </spacer>
                       </item>
                       <item>
-                       <widget class="QPushButton" name="pushButton_8">
+                       <widget class="QPushButton" name="btn_modificar_usuario">
                         <property name="text">
                          <string>Modificar</string>
                         </property>

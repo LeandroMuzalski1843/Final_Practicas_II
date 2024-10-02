@@ -45,8 +45,9 @@ class ClaseLogin(QMainWindow):
         db = Database()
         try:
             resultado = db.obtener_usuario(user,password)
-            id_user=resultado[0]
+            
             if resultado:
+                id_user=resultado[0]
                 grupo=resultado[3]
                 print(grupo)
                 if grupo=="Administrador":

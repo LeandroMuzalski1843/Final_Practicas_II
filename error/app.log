@@ -50,3 +50,23 @@
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "1054 (42S22): Unknown column 'nombre' in 'where clause'", "severity": "ERROR", "timestamp": "2024-09-30T16:41:33Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al eliminar usuario: 1054 (42S22): Unknown column 'nombre' in 'where clause'", "severity": "ERROR", "timestamp": "2024-09-30T16:41:33Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al eliminar usuario: 1054 (42S22): Unknown column 'nombre' in 'where clause'", "severity": "ERROR", "timestamp": "2024-09-30T16:41:33Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'conneccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:54:27Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:54:27Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:54:27Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'conneccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'conneccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'conneccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:55:31Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'conneccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:58:46Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:58:46Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T14:58:46Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'conneccion'", "severity": "ERROR", "timestamp": "2024-10-02T15:03:35Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T15:03:35Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MySQLConnection' object has no attribute 'desconeccion'", "severity": "ERROR", "timestamp": "2024-10-02T15:03:35Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-10-02T15:08:56Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-10-02T15:09:00Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-10-02T15:09:00Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'NoneType' object is not subscriptable", "severity": "ERROR", "timestamp": "2024-10-02T15:10:41Z"}
