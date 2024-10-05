@@ -4,6 +4,7 @@ from datetime import datetime
 from database.conexion import Database  
 from error.logger import log
 from PyQt5.uic import loadUi  
+from views.password import generar_password
 
 class ModificarUsuario(QMainWindow):
     def __init__(self, parent=None):
@@ -62,13 +63,15 @@ class ModificarUsuario(QMainWindow):
         nueva_contrasena = self.lineEdit_Contrasenia.text()
         nuevo_rol = self.comboBoxUsuario.currentText()
         fecha_modificacion = datetime.now()
+        
 
         if not nuevo_nombre or not nueva_contrasena or not nuevo_rol:
             QMessageBox.warning(self, 'Advertencia', 'Todos los campos son obligatorios.')
             return
 
         try:
-            self.db.modificar_usuario(user_id, nuevo_nombre, nueva_contrasena, nuevo_rol, fecha_modificacion)
+            contrasenia_encriptada=generar_password(nueva_contrasena)
+            self.db.modificar_usuario(user_id, nuevo_nombre, contrasenia_encriptada, nuevo_rol, fecha_modificacion)
             QMessageBox.information(self, 'Éxito', 'Usuario modificado correctamente.')
             self.close()
         except Exception as e:

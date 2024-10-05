@@ -7,7 +7,7 @@ from error.logger import log
 from PyQt5.uic import loadUi 
 from views.session import UserSession  
 from database.conexion import Database
-
+from views.password import verifica_password  # Importar la función para verificar la contraseña
 
 class ClaseLogin(QMainWindow):   
     def __init__(self, parent=None):
@@ -26,8 +26,6 @@ class ClaseLogin(QMainWindow):
             QMessageBox.critical(self, 'Error', 'El programa no pudo encontrar la pantalla de login. Consulte con el administrador.')
             sys.exit(1)  # Cerrar la aplicación si hay un error crítico
 
-
-
     def setup(self):
         # Conectar el botón de aceptar con el método para procesar el login
         self.btn_aceptar.clicked.connect(self.aceptar_clicked)
@@ -38,102 +36,47 @@ class ClaseLogin(QMainWindow):
         user = self.lineEdit_Usuario.text()
         password = self.lineEdit_Contrasenia.text()
 
-        # Crea una sesión de usuario y almacena el nombre y el correo.
-        
-
         # Conexión y validación con la base de datos
         db = Database()
         try:
-            resultado = db.obtener_usuario(user,password)
+            # Obtener el usuario y la contraseña encriptada desde la base de datos
+            resultado = db.obtener_usuario(user)
+            print(resultado)
             
             if resultado:
-                id_user=resultado[0]
-                grupo=resultado[3]
-                print(grupo)
-                if grupo=="Administrador":
-                    # Crea la sesión del usuario.
-                    session = UserSession()
-                    session.set_user(user, grupo)
-                    db.actualizar_ultimo_acceso(id_user)
+                id_user = resultado[0]
+                contrasena_encriptada = resultado[2]  # Hash + sal almacenada
+                grupo = resultado[3]
 
-                    self.hide()
-                    self.main_window = MainWindow()
-                    self.main_window.show() 
+                # Verificar la contraseña ingresada contra la encriptada
+                if verifica_password(password, contrasena_encriptada):
+                    print(grupo)
+                    if grupo == "Administrador":
+                        # Crea la sesión del usuario
+                        session = UserSession()
+                        session.set_user(user, grupo)
+                        db.actualizar_ultimo_acceso(id_user)
+
+                        self.hide()
+                        self.main_window = MainWindow()
+                        self.main_window.show() 
+                    else:
+                        # Si es un usuario normal, redirige a la ventana correspondiente
+                        session = UserSession()
+                        session.set_user(user, grupo)
+                        db.actualizar_ultimo_acceso(id_user)
+
+                        self.hide()
+                        self.main_window = MainWindowUser()
+                        self.main_window.show()
                 else:
-                    pass
-                
+                    QMessageBox.warning(self, 'Error', 'Contraseña incorrecta.')
             else:
-                QMessageBox.warning(self, 'Error', 'Datos Incorectos.')
-
-            #REVISAR bcrypt
-            # if resultado:
-                # nombre, contrasena_encriptada = resultado
-                # # Verificar la contraseña encriptada
-                # if bcrypt.checkpw(contrasena.encode('utf-8'), contrasena_encriptada.encode('utf-8')):
-                #     # Si el login es correcto, crea la sesión y redirige a la ventana principal
-                #     session = UserSession()
-                #     session.set_user(nombre, email)
-
-                #     self.hide()
-                #     self.main_window = MainWindow(nombre, email)
-                #     self.main_window.show()
-                # else:
-                #     QMessageBox.warning(self, 'Error', 'Contraseña incorrecta.')
+                QMessageBox.warning(self, 'Error', 'Datos incorrectos.')
+                
         except Exception as e:
             log(e, "error")
             QMessageBox.critical(self, 'Error', f'Ocurrió un error: {str(e)}')
-
-
-
-
-
-
-
-        #Funca(se guarda por las dudas)
-        #================
-        # db_config = config_db()
-        # conn = None
-
-        # #log('iniciando lectura de dato')
-        # try:
-        #     conn = MySQLConnection(**db_config)
-        #     if conn.is_connected():
-        #         print('Conexión establecida')
-        #     else:
-        #         print('No se pudo conectar')
-
-        #     cursor = conn.cursor()
-        #     cursor.execute('SELECT * FROM usuarios WHERE NombreUsuario = %s AND Contrasena = %s', (nombre, contrasena))
-
-        #     resultado = cursor.fetchone()
-        #     if nombre in resultado:
-        #         print("funca")
-        # except Error as error:
-        #     log(error, "error")
-        #     QMessageBox.warning(self, 'Error', 'No se pudo finalizar el proceso debido a un error con la base de datos.')
-        # finally:
-        #     # Cierra la conexión con la base de datos si está abierta.
-        #     if conn is not None and conn.is_connected():
-        #         cursor.close()
-        #         conn.close()
-        
-            
-        # if len(nombre) < 1:
-        #     QMessageBox.information(self, "Error", "Debe ingresar el usuario", QMessageBox.Ok)
-        # elif len(contrasena) < 1:
-        #     QMessageBox.information(self, "Error", "Debe ingresar la contraseña", QMessageBox.Ok)
-        # else:
-        #     # Intentar autenticar el usuario
-        #     if resultado:
-        #         QMessageBox.information(self, 'Éxito', 'Login exitoso.')
-        #         self.hide()
-        #         self.main_window = MainWindow()
-        #         self.main_window.show() 
-                
-        #         # Aquí puedes redirigir al usuario a otra ventana si es necesario.
-        #     else:
-        #         QMessageBox.warning(self, 'Error', 'Usuario o contraseña incorrectos.')
-            
 
 def main():
     # Iniciar la aplicación

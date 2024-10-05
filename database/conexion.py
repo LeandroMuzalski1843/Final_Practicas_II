@@ -40,11 +40,11 @@ class Database:
             self.desconeccion()
 
 
-    def obtener_usuario(self, nombre,contrasena):
+    def obtener_usuario(self, nombre):
         """Obtiene el usuario """
         try:
             self.conneccion()
-            self.cursor.execute('SELECT * FROM usuarios WHERE NombreUsuario = %s AND Contrasena = %s', (nombre, contrasena))
+            self.cursor.execute('SELECT * FROM usuarios WHERE NombreUsuario = %s', (nombre,))
             return self.cursor.fetchone()
         except Error as e:
             log(e, "error")

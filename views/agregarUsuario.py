@@ -1,11 +1,10 @@
-# agregarUsuario.py
-
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from database.conexion import Database
 from error.logger import log
-from datetime import datetime 
+from datetime import datetime
+from views.password import generar_password  # Importa la función de encriptación
 
 class AgregarUsuario(QMainWindow):   
     def __init__(self, parent=None):
@@ -15,7 +14,6 @@ class AgregarUsuario(QMainWindow):
         # Conectar el botón de guardar a la función para agregar usuario
         self.btnAceptar_3.clicked.connect(self.agregar_usuario)
         self.btnCancelar_3.clicked.connect(self.close)
-
 
         # Configurar el valor por defecto del comboBox
         self.comboBoxUsuario.setCurrentText("Administrador")
@@ -45,14 +43,18 @@ class AgregarUsuario(QMainWindow):
         if not self.validar_contrasena(contrasena):
             QMessageBox.warning(self, 'Advertencia', 'La contraseña debe tener al menos 8 caracteres.')
             return
+
+        # Encriptar la contraseña
+        contrasena_encriptada = generar_password(contrasena)
+        
         # Insertar usuario en la base de datos
         try:
             db = Database()
-            db.insertar_usuario(nombre, contrasena, rol,fecha_creacion)
+            db.insertar_usuario(nombre, contrasena_encriptada, rol, fecha_creacion)
             QMessageBox.information(self, 'Éxito', 'Usuario agregado correctamente.')
 
             self.close()
-            # # Limpiar los campos después de guardar
+            # Limpiar los campos después de guardar
             # self.lineEdit_Nombre.clear()
             # self.lineEdit_Contrasenia.clear()
             # self.comboBoxUsuario.setCurrentText("Administrador")  # Resetear el ComboBox al valor por defecto
@@ -68,3 +70,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
