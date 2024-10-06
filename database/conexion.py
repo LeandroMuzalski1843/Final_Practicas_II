@@ -119,3 +119,15 @@ class Database:
             
         finally:
             self.desconeccion() 
+    
+    def obtener_peliculas(self):
+        """Obtiene todas las películas de la base de datos."""
+        try:
+            self.conneccion()
+            self.cursor.execute("SELECT * FROM peliculas")  
+            return self.cursor.fetchall()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error durante la consulta de películas: {e}")
+        finally:
+            self.desconeccion()

@@ -85,3 +85,6 @@
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "non-hexadecimal number found in fromhex() arg at position 0", "severity": "ERROR", "timestamp": "2024-10-05T19:12:16Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "non-hexadecimal number found in fromhex() arg at position 0", "severity": "ERROR", "timestamp": "2024-10-05T19:12:16Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "non-hexadecimal number found in fromhex() arg at position 0", "severity": "ERROR", "timestamp": "2024-10-05T19:13:12Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MainWindow' object has no attribute 'tablapelis'", "severity": "ERROR", "timestamp": "2024-10-06T18:52:44Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MainWindow' object has no attribute 'tablapelis'", "severity": "ERROR", "timestamp": "2024-10-06T18:59:14Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MainWindow' object has no attribute 'tablapelis'", "severity": "ERROR", "timestamp": "2024-10-06T19:03:49Z"}

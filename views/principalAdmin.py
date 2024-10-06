@@ -99,6 +99,8 @@ class MainWindow(QMainWindow):
         
         # Llenar tabla de usuarios al iniciar
         self.cargar_usuarios_en_tabla()
+        # Llenar la tabla de Pelis al iniciar
+        self.cargar_peliculas_en_tabla()
         # Conectar el botón de actualizar con el método cargar_usuarios_en_tabla
         self.btn_actualizarUsuario.clicked.connect(self.cargar_usuarios_en_tabla)
 
@@ -175,9 +177,26 @@ class MainWindow(QMainWindow):
         except Exception as e:
             log(e, "error")
             QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de usuarios.')
-        
+    
+    #==============================================================================================================
+    # Configuracion Pagina Pelis
 
+    def cargar_peliculas_en_tabla(self):
+        """Carga las películas de la base de datos y las muestra en tablapelis."""
+        db = Database()
+        try:
+            peliculas = db.obtener_peliculas()
+            self.tableWidget_pelis.setRowCount(0)
+            for row_number, row_data in enumerate(peliculas):
+                self.tableWidget_pelis.insertRow(row_number)
+                for column_number, data in enumerate(row_data):
+                    self.tableWidget_pelis.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        except Exception as e:
+            log(e, "error")
+            QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de usuarios.')
+    
 
+    
     #==============================================================================================================
     #                         Configuracion - [] X
 
