@@ -131,3 +131,44 @@ class Database:
             raise Exception(f"Error durante la consulta de películas: {e}")
         finally:
             self.desconeccion()
+    
+    # def insertar_pelicula(self, nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion, clasificacion, imagen_ruta,fecha_inicio,fecha_fin):
+    #     """Inserta una nueva película en la base de datos."""
+    #     try:
+    #         self.conneccion()
+    #         query = """
+    #         INSERT INTO peliculas (NombrePelicula, Resumen, PaisOrigen, FechaEstreno, Duracion,FechaEstrenoMundial,FechaInicio,FechaFin, Clasificacion, Imagen)
+    #         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    #         """
+    #         self.cursor.execute(query, (nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion,fecha_inicio,fecha_fin, clasificacion, imagen_ruta))
+    #         self.db.commit()
+    #     except Error as e:
+    #         log(e, "error")
+    #         raise Exception(f"Error al insertar película: {e}")
+    #     finally:
+    #         self.desconeccion()
+    
+    #Solucion ChatGPT
+    def insertar_pelicula(self, nombre, resumen, pais_origen, fecha_estreno, duracion, clasificacion, imagen_ruta, fecha_inicio, fecha_fin):
+        """Inserta una nueva película en la base de datos."""
+        try:
+            self.conneccion()
+
+            # Lee la imagen como binario (BLOB)
+            with open(imagen_ruta, 'rb') as file:
+                imagen_blob = file.read()
+
+            # Consulta SQL para insertar en la base de datos
+            query = """
+            INSERT INTO peliculas (NombrePelicula, Resumen, Imagen, PaisOrigen, FechaEstrenoMundial, FechaInicio, FechaFin, Duracion, Clasificacion)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            valores = (nombre, resumen, imagen_blob, pais_origen, fecha_estreno, fecha_inicio, fecha_fin, duracion, clasificacion)
+
+            self.cursor.execute(query, valores)
+            self.db.commit()  # Confirmar la transacción
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al insertar película: {e}")
+        finally:
+            self.desconeccion()

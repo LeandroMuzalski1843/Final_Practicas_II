@@ -5,7 +5,6 @@ from database.conexion import Database
 from error.logger import log
 from PyQt5.uic import loadUi  
 from views.password import generar_password
-
 class ModificarUsuario(QMainWindow):
     def __init__(self, parent=None):
         super(ModificarUsuario, self).__init__(parent)

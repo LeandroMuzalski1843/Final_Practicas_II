@@ -12,6 +12,7 @@ from database.conexion import Database
 from error.logger import log
 from views.eliminarUsuario import EliminarUsuario
 from views.modificarUsuario import ModificarUsuario
+from views.agregarPeliculas import AgregarPeliculas
 
 class MainWindow(QMainWindow):   
     def __init__(self, parent=None):
@@ -73,6 +74,7 @@ class MainWindow(QMainWindow):
         self.bt_agregar_usuario.clicked.connect(self.abrir_agregar_usuario)
         self.btn_eliminar_usuario.clicked.connect(self.abrir_eliminar_usuarios)
         self.btn_modificar_usuario.clicked.connect(self.abrir_modificar_usuario)
+        self.btn_agregar_pelicula.clicked.connect(self.abrir_agregar_pelicula)
         
 
         # Control de los botones de la barra de títulos (minimizar, maximizar/restaurar, cerrar)
@@ -103,6 +105,10 @@ class MainWindow(QMainWindow):
         self.cargar_peliculas_en_tabla()
         # Conectar el botón de actualizar con el método cargar_usuarios_en_tabla
         self.btn_actualizarUsuario.clicked.connect(self.cargar_usuarios_en_tabla)
+
+
+        # Conectar el botón de actualizar con el método cargar_pelis_en_tabla
+        self.btn_actualizar_pelicula.clicked.connect(self.cargar_peliculas_en_tabla)
 
 
 
@@ -159,6 +165,10 @@ class MainWindow(QMainWindow):
     
     def abrir_modificar_usuario(self):
         self.modificar_usuario = ModificarUsuario()
+        self.modificar_usuario.show()
+    
+    def abrir_agregar_pelicula(self):
+        self.modificar_usuario = AgregarPeliculas()
         self.modificar_usuario.show()
 
     #==============================================================================================================

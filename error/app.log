@@ -88,3 +88,11 @@
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MainWindow' object has no attribute 'tablapelis'", "severity": "ERROR", "timestamp": "2024-10-06T18:52:44Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MainWindow' object has no attribute 'tablapelis'", "severity": "ERROR", "timestamp": "2024-10-06T18:59:14Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'MainWindow' object has no attribute 'tablapelis'", "severity": "ERROR", "timestamp": "2024-10-06T19:03:49Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'AgregarPeliculas' object has no attribute 'ruta_imagen'", "severity": "ERROR", "timestamp": "2024-10-08T20:46:20Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "insertar_pelicula() missing 1 required positional argument: 'fecha_fin'", "severity": "ERROR", "timestamp": "2024-10-08T20:51:17Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "1054 (42S22): Unknown column 'nombre' in 'field list'", "severity": "ERROR", "timestamp": "2024-10-08T20:53:06Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar pel\u00edcula: 1054 (42S22): Unknown column 'nombre' in 'field list'", "severity": "ERROR", "timestamp": "2024-10-08T20:53:06Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar pel\u00edcula: 1054 (42S22): Unknown column 'nombre' in 'field list'", "severity": "ERROR", "timestamp": "2024-10-08T20:53:06Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "1136 (21S01): Column count doesn't match value count at row 1", "severity": "ERROR", "timestamp": "2024-10-08T20:56:26Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar pel\u00edcula: 1136 (21S01): Column count doesn't match value count at row 1", "severity": "ERROR", "timestamp": "2024-10-08T20:56:26Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar pel\u00edcula: 1136 (21S01): Column count doesn't match value count at row 1", "severity": "ERROR", "timestamp": "2024-10-08T20:56:26Z"}
