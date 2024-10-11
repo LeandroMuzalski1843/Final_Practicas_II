@@ -1,33 +1,41 @@
 import sys
 import os
 import shutil
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from database.conexion import Database
 from error.logger import log
-from datetime import datetime  # Importar datetime para obtener la fecha actual
+from datetime import datetime
 
 class AgregarPeliculas(QtWidgets.QWidget):
     def __init__(self):
         super(AgregarPeliculas, self).__init__()
-        loadUi('ui\\agregarPelicula.ui', self)  # Carga el archivo .ui
+        loadUi('ui\\agregarPelicula.ui', self)  
         
         # Conectar los botones a funciones
-        self.btn_cancelar.clicked.connect(self.cancelar)  # Botón "Cancelar"
-        self.btn_aceptar.clicked.connect(self.aceptar)   # Botón "Aceptar"
-        self.btn_seleccionar_pelicula.clicked.connect(self.seleccionar_pelicula)  # Botón "Seleccionar Película"
-        
-        # Crear una carpeta para guardar las imágenes si no existe
+        self.btn_cancelar.clicked.connect(self.cancelar)  
+        self.btn_aceptar.clicked.connect(self.aceptar)   
+        self.btn_seleccionar_pelicula.clicked.connect(self.seleccionar_pelicula)  
+    
         self.imagenes_dir = 'movies'
 
         # Variable para almacenar la ruta de la imagen seleccionada
         self.imagen_seleccionada = None
 
+        # Configurar la fecha actual como fecha por defecto
+        fecha_actual = QtCore.QDate.currentDate()
+        self.dateEdit_estreno_mundial.setDate(fecha_actual)
+        self.dateEdit_fecha_inicio.setDate(fecha_actual)
+        self.dateEdit_fecha_fin.setDate(fecha_actual)
+
+        # Habilitar la selección de fecha mediante un calendario
+        self.dateEdit_estreno_mundial.setCalendarPopup(True)
+        self.dateEdit_fecha_inicio.setCalendarPopup(True)
+        self.dateEdit_fecha_fin.setCalendarPopup(True)
+
     def cancelar(self):
-        # Acción al hacer clic en "Cancelar"
-        print("Cancelado")
-        self.close()  # Cerrar la ventana
+        self.close() 
 
     def aceptar(self):
         # Obtener los valores de los campos
@@ -59,37 +67,37 @@ class AgregarPeliculas(QtWidgets.QWidget):
         if not fecha_fin:
             self.mostrar_advertencia("El campo 'Fecha de Fin' está vacío.")
             return
-        if duracion <= 0:
-            self.mostrar_advertencia("La duración debe ser mayor a 0.")
+        if duracion < 60:
+            self.mostrar_advertencia("La duración debe ser como mínimo 60.")
             return
         if not self.imagen_seleccionada:
             self.mostrar_advertencia("No se ha seleccionado ninguna imagen.")
             return
 
-        # Obtener la fecha actual y formatearla
-        fecha_actual = datetime.now().strftime("%Y-%m-%d")
+        # Obtener la fecha y hora actual y formatearla
+        fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
 
-        # Concatenar el nombre de la película con la fecha de guardado
-        nombre_con_fecha = f"{nombre_pelicula} ({fecha_actual})"
+        # Concatenar el nombre de la película con la fecha y hora de guardado
+        nombre_con_fecha_hora = f"{nombre_pelicula} ({fecha_hora_actual})"
 
         # Inicializar la variable nueva_ruta_imagen
         nueva_ruta_imagen = None
 
-        # Si hay una imagen seleccionada, moverla a la carpeta con el nuevo nombre
+        # Si hay una imagen seleccionada, copiarla a la carpeta con el nuevo nombre
         if self.imagen_seleccionada:
             nombre_archivo_imagen = os.path.basename(self.imagen_seleccionada)
             extension = os.path.splitext(nombre_archivo_imagen)[1]  # Obtener la extensión de la imagen
-            nueva_ruta_imagen = os.path.join(self.imagenes_dir, f"{nombre_con_fecha}{extension}")
+            nueva_ruta_imagen = os.path.join(self.imagenes_dir, f"{nombre_con_fecha_hora}{extension}")
 
-            # Mover la imagen seleccionada a la carpeta destino con el nuevo nombre
-            shutil.move(self.imagen_seleccionada, nueva_ruta_imagen)
+            # Copiar la imagen seleccionada a la carpeta destino con el nuevo nombre
+            shutil.copy2(self.imagen_seleccionada, nueva_ruta_imagen)
             
-            # Guardar solo el nombre del archivo con la fecha en la base de datos
-            imagen_ruta = f"{nombre_con_fecha}{extension}"
+            # Guardar solo el nombre del archivo con la fecha y hora en la base de datos
+            nombre_archivo_guardado = f"{nombre_con_fecha_hora}{extension}"
         
         db = Database()
         try:
-            db.insertar_pelicula(nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion, clasificacion, imagen_ruta, fecha_inicio, fecha_fin)
+            db.insertar_pelicula(nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion, clasificacion, nombre_archivo_guardado, fecha_inicio, fecha_fin)
             QMessageBox.information(self, 'Éxito', 'La película ha sido guardada exitosamente.')
         except Exception as e:
             log(e, "error")
@@ -128,3 +136,4 @@ if __name__ == "__main__":
     window = AgregarPeliculas()
     window.show()
     sys.exit(app.exec_())
+

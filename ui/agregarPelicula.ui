@@ -361,6 +361,26 @@
                 <height>25</height>
                </size>
               </property>
+              <item>
+               <property name="text">
+                <string>ATP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+13</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+16</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+18</string>
+               </property>
+              </item>
              </widget>
             </item>
            </layout>
