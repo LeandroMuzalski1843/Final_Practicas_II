@@ -13,6 +13,7 @@ from error.logger import log
 from views.eliminarUsuario import EliminarUsuario
 from views.modificarUsuario import ModificarUsuario
 from views.agregarPeliculas import AgregarPeliculas
+from views.eliminarPeliculas import EliminarPelicula
 
 class MainWindow(QMainWindow):   
     def __init__(self, parent=None):
@@ -75,6 +76,7 @@ class MainWindow(QMainWindow):
         self.btn_eliminar_usuario.clicked.connect(self.abrir_eliminar_usuarios)
         self.btn_modificar_usuario.clicked.connect(self.abrir_modificar_usuario)
         self.btn_agregar_pelicula.clicked.connect(self.abrir_agregar_pelicula)
+        self.btn_eliminar_pelicula.clicked.connect(self.abrir_eliminar_pelicula)
         
 
         # Control de los botones de la barra de títulos (minimizar, maximizar/restaurar, cerrar)
@@ -170,6 +172,11 @@ class MainWindow(QMainWindow):
     def abrir_agregar_pelicula(self):
         self.modificar_usuario = AgregarPeliculas()
         self.modificar_usuario.show()
+    
+    def abrir_eliminar_pelicula(self):
+        self.modificar_usuario = EliminarPelicula()
+        self.modificar_usuario.show()
+        
 
     #==============================================================================================================
     # Configuracion Pagina Usuarios

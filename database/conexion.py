@@ -154,21 +154,30 @@ class Database:
         try:
             self.conneccion()
 
-            # Lee la imagen como binario (BLOB)
-            with open(imagen_ruta, 'rb') as file:
-                imagen_blob = file.read()
-
             # Consulta SQL para insertar en la base de datos
             query = """
             INSERT INTO peliculas (NombrePelicula, Resumen, Imagen, PaisOrigen, FechaEstrenoMundial, FechaInicio, FechaFin, Duracion, Clasificacion)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
-            valores = (nombre, resumen, imagen_blob, pais_origen, fecha_estreno, fecha_inicio, fecha_fin, duracion, clasificacion)
+            valores = (nombre, resumen, imagen_ruta, pais_origen, fecha_estreno, fecha_inicio, fecha_fin, duracion, clasificacion)
 
             self.cursor.execute(query, valores)
             self.db.commit()  # Confirmar la transacción
         except Error as e:
             log(e, "error")
             raise Exception(f"Error al insertar película: {e}")
+        finally:
+            self.desconeccion()
+
+    def eliminar_pelicula(self, pelicula_id):
+        """Elimina una película de la base de datos por su ID."""
+        try:
+            self.conneccion()
+            query = "DELETE FROM peliculas WHERE IdPelicula = %s"
+            self.cursor.execute(query, (pelicula_id,))
+            self.db.commit()  # Confirma los cambios en la base de datos.
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al eliminar película: {e}")
         finally:
             self.desconeccion()

@@ -96,3 +96,8 @@
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "1136 (21S01): Column count doesn't match value count at row 1", "severity": "ERROR", "timestamp": "2024-10-08T20:56:26Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar pel\u00edcula: 1136 (21S01): Column count doesn't match value count at row 1", "severity": "ERROR", "timestamp": "2024-10-08T20:56:26Z"}
 {"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al insertar pel\u00edcula: 1136 (21S01): Column count doesn't match value count at row 1", "severity": "ERROR", "timestamp": "2024-10-08T20:56:26Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "'method' object is not iterable", "severity": "ERROR", "timestamp": "2024-10-11T16:44:09Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "1054 (42S22): Unknown column 'IdPeliculas' in 'where clause'", "severity": "ERROR", "timestamp": "2024-10-11T16:46:06Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al eliminar pel\u00edcula: 1054 (42S22): Unknown column 'IdPeliculas' in 'where clause'", "severity": "ERROR", "timestamp": "2024-10-11T16:46:06Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "Error al eliminar pel\u00edcula: 1054 (42S22): Unknown column 'IdPeliculas' in 'where clause'", "severity": "ERROR", "timestamp": "2024-10-11T16:46:06Z"}
+{"name": "error.logger", "filename": "logger.py", "lineno": 33, "message": "local variable 'nueva_ruta_imagen' referenced before assignment", "severity": "ERROR", "timestamp": "2024-10-11T17:05:21Z"}
