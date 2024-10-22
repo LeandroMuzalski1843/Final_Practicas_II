@@ -162,20 +162,6 @@
             <item>
              <widget class="QTextEdit" name="textEdit_Resumen"/>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QPushButton" name="btn_generos">
-                <property name="text">
-                 <string>Generos</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_generos"/>
-              </item>
-             </layout>
-            </item>
            </layout>
           </widget>
          </item>

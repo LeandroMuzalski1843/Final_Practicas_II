@@ -150,7 +150,7 @@ class Database:
     
     #Solucion ChatGPT
     def insertar_pelicula(self, nombre, resumen, pais_origen, fecha_estreno, duracion, clasificacion, imagen_ruta, fecha_inicio, fecha_fin):
-        """Inserta una nueva película en la base de datos."""
+        """Inserta una nueva película en la base de datos y retorna el ID de la película."""
         try:
             self.conneccion()
 
@@ -163,11 +163,17 @@ class Database:
 
             self.cursor.execute(query, valores)
             self.db.commit()  # Confirmar la transacción
+
+            # Obtener el ID de la película recién insertada
+            return self.cursor.lastrowid
+
         except Error as e:
             log(e, "error")
             raise Exception(f"Error al insertar película: {e}")
+
         finally:
             self.desconeccion()
+
 
     def eliminar_pelicula(self, pelicula_id):
         """Elimina una película de la base de datos por su ID."""
@@ -179,5 +185,48 @@ class Database:
         except Error as e:
             log(e, "error")
             raise Exception(f"Error al eliminar película: {e}")
+        finally:
+            self.desconeccion()
+    
+    def obtener_generos(self):
+        """Obtiene todos los géneros de la base de datos."""
+        try:
+            self.conneccion()
+            self.cursor.execute("SELECT * FROM generos")  
+            return self.cursor.fetchall()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error durante la consulta de géneros: {e}")
+        finally:
+            self.desconeccion()
+
+    def insertar_generos(self, id_pelicula, id_genero):
+        """Inserta un registro en la tabla peliculagenero."""
+        try:
+            self.conneccion()
+            query = """
+            INSERT INTO peliculagenero (IdPelicula, IdGenero)
+            VALUES (%s, %s)
+            """
+            valores = (id_pelicula, id_genero)
+            self.cursor.execute(query, valores)
+            self.db.commit()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al insertar el género para la película: {e}")
+        finally:
+            self.desconeccion()
+
+    def obtener_id_genero_por_nombre(self, nombre_genero):
+        """Obtiene el ID de un género por su nombre."""
+        try:
+            self.conneccion()
+            query = "SELECT IdGeneros FROM generos WHERE NombreGenero = %s"
+            self.cursor.execute(query, (nombre_genero,))
+            resultado = self.cursor.fetchone()
+            return resultado[0] if resultado else None
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al obtener el ID del género: {e}")
         finally:
             self.desconeccion()

@@ -1080,6 +1080,11 @@ p, li { white-space: pre-wrap; }
                      <string>Clasificacion</string>
                     </property>
                    </column>
+                   <column>
+                    <property name="text">
+                     <string>Generos</string>
+                    </property>
+                   </column>
                   </widget>
                  </item>
                 </layout>

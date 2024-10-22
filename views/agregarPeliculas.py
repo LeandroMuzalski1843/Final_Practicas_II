@@ -3,25 +3,64 @@ import os
 import shutil
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog, QCheckBox, QDialogButtonBox, QVBoxLayout
 from database.conexion import Database
 from error.logger import log
 from datetime import datetime
+
+# Diálogo para seleccionar géneros
+class GenerosPeliculas(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Seleccionar Géneros")
+        self.seleccionar_generos = []
+        layout = QVBoxLayout()
+        self.checkboxes = []
+
+        # Cargar géneros desde la base de datos
+        try:
+            database = Database()
+            self.genres = [genre[1] for genre in database.obtener_generos()]
+        except Exception as e:
+            log(e, "error")
+            QMessageBox.critical(self, 'Error', 'No se pudo cargar la lista de géneros.')
+            self.genres = []
+
+        # Crear checkboxes para cada género
+        for genre in self.genres:
+            checkbox = QCheckBox(genre)
+            self.checkboxes.append(checkbox)
+            layout.addWidget(checkbox)
+
+        # Botones para aceptar o cancelar
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+        self.setLayout(layout)
+
+    def accept(self):
+        self.seleccionar_generos = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
+        super().accept()
+
+
 
 class AgregarPeliculas(QtWidgets.QWidget):
     def __init__(self):
         super(AgregarPeliculas, self).__init__()
         loadUi('ui\\agregarPelicula.ui', self)  
         
-        # Conectar los botones a funciones
-        self.btn_cancelar.clicked.connect(self.cancelar)  
-        self.btn_aceptar.clicked.connect(self.aceptar)   
-        self.btn_seleccionar_pelicula.clicked.connect(self.seleccionar_pelicula)  
-    
+        self.db = Database()
         self.imagenes_dir = 'movies'
-
-        # Variable para almacenar la ruta de la imagen seleccionada
         self.imagen_seleccionada = None
+
+        # Establecer el QLineEdit como de solo lectura
+        self.lineEdit_generos.setReadOnly(True)
+
+        # Crear el directorio de imágenes si no existe
+        if not os.path.exists(self.imagenes_dir):
+            os.makedirs(self.imagenes_dir)
 
         # Configurar la fecha actual como fecha por defecto
         fecha_actual = QtCore.QDate.currentDate()
@@ -34,8 +73,14 @@ class AgregarPeliculas(QtWidgets.QWidget):
         self.dateEdit_fecha_inicio.setCalendarPopup(True)
         self.dateEdit_fecha_fin.setCalendarPopup(True)
 
+        # Conectar los botones a funciones
+        self.btn_cancelar.clicked.connect(self.cancelar)  
+        self.btn_aceptar.clicked.connect(self.aceptar)   
+        self.btn_seleccionar_pelicula.clicked.connect(self.seleccionar_pelicula)  
+        self.btn_generos.clicked.connect(self.abrir_seleccion_generos)  
+
     def cancelar(self):
-        self.close() 
+        self.close()
 
     def aceptar(self):
         # Obtener los valores de los campos
@@ -47,6 +92,7 @@ class AgregarPeliculas(QtWidgets.QWidget):
         fecha_inicio = self.dateEdit_fecha_inicio.date().toString("yyyy-MM-dd")
         duracion = self.duracion.value()
         clasificacion = self.clasificacion.currentText()
+        generos = self.lineEdit_generos.text().split(", ")  # Obtener géneros seleccionados como lista
 
         # Verificar si los campos están vacíos
         if not nombre_pelicula:
@@ -73,40 +119,54 @@ class AgregarPeliculas(QtWidgets.QWidget):
         if not self.imagen_seleccionada:
             self.mostrar_advertencia("No se ha seleccionado ninguna imagen.")
             return
+        if not self.lineEdit_generos.text():
+            self.mostrar_advertencia("No se ha seleccionado ningún género.")
+            return
 
-        # Obtener la fecha y hora actual y formatearla
+
+        # Guardar la imagen seleccionada
         fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-
-        # Concatenar el nombre de la película con la fecha y hora de guardado
         nombre_con_fecha_hora = f"{nombre_pelicula} ({fecha_hora_actual})"
+        nombre_archivo_guardado = None
 
-        # Inicializar la variable nueva_ruta_imagen
-        nueva_ruta_imagen = None
-
-        # Si hay una imagen seleccionada, copiarla a la carpeta con el nuevo nombre
         if self.imagen_seleccionada:
             nombre_archivo_imagen = os.path.basename(self.imagen_seleccionada)
-            extension = os.path.splitext(nombre_archivo_imagen)[1]  # Obtener la extensión de la imagen
+            extension = os.path.splitext(nombre_archivo_imagen)[1]
             nueva_ruta_imagen = os.path.join(self.imagenes_dir, f"{nombre_con_fecha_hora}{extension}")
-
-            # Copiar la imagen seleccionada a la carpeta destino con el nuevo nombre
             shutil.copy2(self.imagen_seleccionada, nueva_ruta_imagen)
-            
-            # Guardar solo el nombre del archivo con la fecha y hora en la base de datos
             nombre_archivo_guardado = f"{nombre_con_fecha_hora}{extension}"
-        
-        db = Database()
+
+        # Insertar la película en la base de datos
         try:
-            db.insertar_pelicula(nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion, clasificacion, nombre_archivo_guardado, fecha_inicio, fecha_fin)
-            QMessageBox.information(self, 'Éxito', 'La película ha sido guardada exitosamente.')
+            # Aquí obtendrás el id de la película recién insertada
+            id_pelicula = self.db.insertar_pelicula(
+                nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion, clasificacion, nombre_archivo_guardado, fecha_inicio, fecha_fin
+            )
+
+            if id_pelicula:
+                # Insertar los géneros seleccionados
+                for genero in generos:
+                    id_genero = self.db.obtener_id_genero_por_nombre(genero)
+                    if id_genero:
+                        # Insertar la relación en la tabla peliculagenero
+                        self.db.insertar_generos(id_pelicula, id_genero)
+                    else:
+                        log(f"No se encontró el género {genero} en la base de datos.", "error")
+                        QMessageBox.warning(self, 'Advertencia', f'El género {genero} no se pudo asociar a la película.')
+
+                QMessageBox.information(self, 'Éxito', 'La película ha sido guardada exitosamente.')
+            else:
+                log("Error: No se pudo obtener el ID de la película después de la inserción.", "error")
+                QMessageBox.critical(self, 'Error', 'No se pudo guardar la película correctamente.')
+
         except Exception as e:
             log(e, "error")
             QMessageBox.critical(self, 'Error', f'Ocurrió un error al guardar la película: {e}')
-        
+
         self.close()
 
+
     def mostrar_advertencia(self, mensaje):
-        # Mostrar una ventana emergente de advertencia
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Warning)
         msg_box.setText(mensaje)
@@ -114,26 +174,25 @@ class AgregarPeliculas(QtWidgets.QWidget):
         msg_box.exec_()
 
     def seleccionar_pelicula(self):
-        # Abrir el explorador de archivos para seleccionar una imagen
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
         archivo_imagen, _ = QFileDialog.getOpenFileName(self, "Seleccionar Imagen", "", "Imágenes (*.png *.jpg *.jpeg *.bmp)", options=options)
         
         if archivo_imagen:
-            # Obtener el nombre del archivo seleccionado
-            nombre_archivo = os.path.basename(archivo_imagen)
-            
-            # Definir una ruta temporal para la imagen seleccionada (sin copiar todavía)
             self.imagen_seleccionada = archivo_imagen
-
-            # Mostrar la imagen seleccionada en el QLabel 'label_peli'
             pixmap = QtGui.QPixmap(self.imagen_seleccionada)
             self.label_peli.setPixmap(pixmap)
             self.label_peli.setScaledContents(True)
+
+    def abrir_seleccion_generos(self):
+        dialog = GenerosPeliculas()
+        if dialog.exec_():
+            generos_seleccionados = ", ".join(dialog.seleccionar_generos)
+            self.lineEdit_generos.setText(generos_seleccionados)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = AgregarPeliculas()
     window.show()
     sys.exit(app.exec_())
-
