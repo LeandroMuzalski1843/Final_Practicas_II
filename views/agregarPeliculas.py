@@ -125,8 +125,8 @@ class AgregarPeliculas(QtWidgets.QWidget):
 
 
         # Guardar la imagen seleccionada
-        fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-        nombre_con_fecha_hora = f"{nombre_pelicula} ({fecha_hora_actual})"
+        fecha_hora_actual = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        nombre_con_fecha_hora = f"{nombre_pelicula}-{fecha_hora_actual}"
         nombre_archivo_guardado = None
 
         if self.imagen_seleccionada:

@@ -15,6 +15,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QComboBox" name="comboBox_peliculas"/>
+   </item>
+   <item>
     <widget class="QWidget" name="widget" native="true">
      <property name="maximumSize">
       <size>
@@ -161,6 +164,20 @@
             </item>
             <item>
              <widget class="QTextEdit" name="textEdit_Resumen"/>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QPushButton" name="btn_generos">
+                <property name="text">
+                 <string>Generos</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit_generos"/>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>

@@ -14,6 +14,7 @@ from views.eliminarUsuario import EliminarUsuario
 from views.modificarUsuario import ModificarUsuario
 from views.agregarPeliculas import AgregarPeliculas
 from views.eliminarPeliculas import EliminarPelicula
+from views.modificarPelicula import ModificarPelicula
 
 class MainWindow(QMainWindow):   
     def __init__(self, parent=None):
@@ -77,6 +78,7 @@ class MainWindow(QMainWindow):
         self.btn_modificar_usuario.clicked.connect(self.abrir_modificar_usuario)
         self.btn_agregar_pelicula.clicked.connect(self.abrir_agregar_pelicula)
         self.btn_eliminar_pelicula.clicked.connect(self.abrir_eliminar_pelicula)
+        self.btn_modificar_pelicula.clicked.connect(self.abrir_modificar_pelicula)
         
 
         # Control de los botones de la barra de títulos (minimizar, maximizar/restaurar, cerrar)
@@ -101,6 +103,9 @@ class MainWindow(QMainWindow):
         # Actualizar descripción
         self.comboBox_cartelera.currentIndexChanged.connect(lambda: self.actualizar_descripcion(self.comboBox_cartelera.currentIndex()))  
         
+
+        
+
         # Llenar tabla de usuarios al iniciar
         self.cargar_usuarios_en_tabla()
         # Llenar la tabla de Pelis al iniciar
@@ -158,9 +163,9 @@ class MainWindow(QMainWindow):
     # Configuracion Pagina Usuario
 
     def abrir_agregar_usuario(self):
-        self.agregar_usuario = AgregarUsuario()
+        self.agregar_usuario = AgregarUsuario(self)
         self.agregar_usuario.show()
-    
+        
     def abrir_eliminar_usuarios(self):
         self.eliminar_usuario = EliminarUsuario()
         self.eliminar_usuario.show()
@@ -170,12 +175,17 @@ class MainWindow(QMainWindow):
         self.modificar_usuario.show()
     
     def abrir_agregar_pelicula(self):
-        self.modificar_usuario = AgregarPeliculas()
-        self.modificar_usuario.show()
+        self.agregar_pelicula = AgregarPeliculas()
+        self.agregar_pelicula.show()
     
     def abrir_eliminar_pelicula(self):
-        self.modificar_usuario = EliminarPelicula()
-        self.modificar_usuario.show()
+        self.eliminar_pelicula = EliminarPelicula()
+        self.eliminar_pelicula.show()
+    
+    def abrir_modificar_pelicula(self):
+        self.modificar_pelicula = ModificarPelicula()
+        self.modificar_pelicula.show()
+    
         
 
     #==============================================================================================================

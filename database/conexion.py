@@ -174,6 +174,38 @@ class Database:
         finally:
             self.desconeccion()
 
+    def modificar_pelicula(self, idPelicula, nombre, resumen, pais_origen, fecha_estreno,duracion, clasificacion, imagen_ruta, fecha_inicio, fecha_fin):
+        """Modifica los datos de una película existente en la base de datos."""
+        try:
+            self.conneccion()
+
+            # Consulta SQL para actualizar la película
+            query = """
+                    UPDATE peliculas
+                    SET NombrePelicula = %s, Resumen = %s, Imagen = %s, PaisOrigen = %s,
+                        FechaEstrenoMundial = %s, FechaInicio = %s, FechaFin = %s, 
+                        Duracion = %s, Clasificacion = %s
+                    WHERE IdPelicula = %s
+                """
+            valores = (nombre, resumen, imagen_ruta, pais_origen, fecha_estreno, 
+                    fecha_inicio, fecha_fin, duracion, clasificacion, idPelicula)
+
+            self.cursor.execute(query, valores)
+            self.db.commit()  # Confirmar la transacción
+
+            if self.cursor.rowcount > 0:
+                return True  # Retornar True si se actualizó con éxito
+            else:
+                raise Exception(f"No se encontró la película con Id {idPelicula}")
+
+        except Exception as e:
+            log(e, "error")
+            raise Exception(f"Error al actualizar película: {e}")
+
+        finally:
+            self.desconeccion()
+
+
 
     def eliminar_pelicula(self, pelicula_id):
         """Elimina una película de la base de datos por su ID."""
@@ -216,6 +248,25 @@ class Database:
             raise Exception(f"Error al insertar el género para la película: {e}")
         finally:
             self.desconeccion()
+    
+    def obtener_generos_pelicula(self, pelicula_id):
+        """Obtiene los géneros asociados a una película por su ID."""
+        try:
+            self.conneccion()
+            query = """
+            SELECT g.NombreGenero 
+            FROM peliculagenero pg
+            JOIN generos g ON pg.IdGenero = g.IdGeneros
+            WHERE pg.IdPelicula = %s
+            """
+            self.cursor.execute(query, (pelicula_id,))
+            return [row[0] for row in self.cursor.fetchall()]  # Retorna una lista de nombres de géneros
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error durante la consulta de géneros de la película: {e}")
+        finally:
+            self.desconeccion()
+
 
     def obtener_id_genero_por_nombre(self, nombre_genero):
         """Obtiene el ID de un género por su nombre."""
@@ -228,5 +279,37 @@ class Database:
         except Error as e:
             log(e, "error")
             raise Exception(f"Error al obtener el ID del género: {e}")
+        finally:
+            self.desconeccion()
+    
+    def obtener_datos_pelicula(self, pelicula_id):
+        """Obtiene los datos de una película por su ID."""
+        try:
+            self.conneccion()
+            query = "SELECT NombrePelicula, Resumen, PaisOrigen, FechaEstrenoMundial, FechaInicio, FechaFin, Duracion, Clasificacion, Imagen FROM peliculas WHERE IdPelicula = %s"
+            self.cursor.execute(query, (pelicula_id,))
+            resultado = self.cursor.fetchone()
+
+            if resultado:
+                # Mapear los resultados a un diccionario
+                datos_pelicula = {
+                    'nombre': resultado[0],
+                    'resumen': resultado[1],
+                    'pais_origen': resultado[2],
+                    'fecha_estreno': resultado[3],
+                    'fecha_inicio': resultado[4],
+                    'fecha_fin': resultado[5],
+                    'duracion': resultado[6],
+                    'clasificacion': resultado[7],
+                    'imagen': resultado[8]
+                }
+                return datos_pelicula
+            else:
+                return None
+
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error durante la consulta de la película: {e}")
+        
         finally:
             self.desconeccion()
