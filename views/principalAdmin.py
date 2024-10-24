@@ -209,18 +209,29 @@ class MainWindow(QMainWindow):
     # Configuracion Pagina Pelis
 
     def cargar_peliculas_en_tabla(self):
-        """Carga las películas de la base de datos y las muestra en tablapelis."""
+        """Carga las películas de la base de datos y las muestra en `tableWidget_pelis`."""
         db = Database()
         try:
-            peliculas = db.obtener_peliculas()
+            peliculas = db.obtener_peliculas()  # Obtiene todas las películas
             self.tableWidget_pelis.setRowCount(0)
-            for row_number, row_data in enumerate(peliculas):
+
+            for row_number, pelicula in enumerate(peliculas):
+                id_pelicula = pelicula[0]  # El ID de la película está en la primera columna
+                generos = db.obtener_generos_pelicula(id_pelicula)  # Consulta los géneros
+                generos_str = ", ".join(generos)  # Convierte la lista de géneros a una cadena
+
+                # Extendemos la tupla con los géneros concatenados
+                pelicula_con_generos = pelicula + (generos_str,)
+
+                # Insertamos los datos en la tabla
                 self.tableWidget_pelis.insertRow(row_number)
-                for column_number, data in enumerate(row_data):
+                for column_number, data in enumerate(pelicula_con_generos):
                     self.tableWidget_pelis.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+
         except Exception as e:
             log(e, "error")
-            QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de usuarios.')
+            QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de películas.')
+
     
 
     

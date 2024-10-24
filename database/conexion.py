@@ -174,7 +174,7 @@ class Database:
         finally:
             self.desconeccion()
 
-    def modificar_pelicula(self, idPelicula, nombre, resumen, pais_origen, fecha_estreno,duracion, clasificacion, imagen_ruta, fecha_inicio, fecha_fin):
+    def modificar_pelicula(self, idPelicula, nombre, resumen, pais_origen, fecha_estreno, duracion, clasificacion, imagen_ruta, fecha_inicio, fecha_fin):
         """Modifica los datos de una película existente en la base de datos."""
         try:
             self.conneccion()
@@ -204,6 +204,7 @@ class Database:
 
         finally:
             self.desconeccion()
+
 
 
 
@@ -303,6 +304,7 @@ class Database:
                     'clasificacion': resultado[7],
                     'imagen': resultado[8]
                 }
+                print(resultado)
                 return datos_pelicula
             else:
                 return None
@@ -311,5 +313,36 @@ class Database:
             log(e, "error")
             raise Exception(f"Error durante la consulta de la película: {e}")
         
+        finally:
+            self.desconeccion()
+    
+    def eliminar_generos_pelicula(self, id_pelicula):
+        """Elimina todos los géneros asociados a una película."""
+        try:
+            self.conneccion()
+            query = """
+            DELETE FROM peliculagenero WHERE IdPelicula = %s
+            """
+            self.cursor.execute(query, (id_pelicula,))
+            self.db.commit()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al eliminar géneros de la película: {e}")
+        finally:
+            self.desconeccion()
+
+    def obtener_id_genero(self, nombre_genero):
+        """Obtiene el ID de un género por su nombre."""
+        try:
+            self.conneccion()
+            query = """
+            SELECT IdGeneros FROM generos WHERE NombreGenero = %s
+            """
+            self.cursor.execute(query, (nombre_genero,))
+            resultado = self.cursor.fetchone()
+            return resultado[0] if resultado else None
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al obtener el ID del género: {e}")
         finally:
             self.desconeccion()

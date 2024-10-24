@@ -45,6 +45,7 @@ class EliminarPelicula(QWidget):
             if respuesta == QMessageBox.Yes:
                 try:
                     self.db.eliminar_pelicula(pelicula_id)
+                    self.db.eliminar_generos_pelicula(pelicula_id)
                     QMessageBox.information(self, 'Éxito', 'La película ha sido eliminada exitosamente.')
                     self.close()
                 except Exception as e:

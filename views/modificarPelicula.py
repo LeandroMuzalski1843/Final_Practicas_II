@@ -141,10 +141,20 @@ class ModificarPelicula(QtWidgets.QWidget):
         self.close()
 
     def aceptar(self):
+        #TODO
         try:
-            nombre = self.nombre_pelicula.text() or self.datos_originales['nombre']
-            resumen = self.textEdit_Resumen.toPlainText() or self.datos_originales['resumen']
-            pais = self.lineEdit_pais_origen.text() or self.datos_originales['pais_origen']
+            # Validar que se haya seleccionado una película
+            id_pelicula = self.comboBox_peliculas.currentData()
+            print(f"ID de la película seleccionada: {id_pelicula}")  # Log para verificar el ID
+
+            if not id_pelicula:
+                QMessageBox.warning(self, 'Advertencia', 'Selecciona una película válida.')
+                return
+
+            # Recuperar los datos ingresados
+            nombre = self.nombre_pelicula.text()
+            resumen = self.textEdit_Resumen.toPlainText()
+            pais = self.lineEdit_pais_origen.text()
             estreno = self.dateEdit_estreno_mundial.date().toString("yyyy-MM-dd")
             inicio = self.dateEdit_fecha_inicio.date().toString("yyyy-MM-dd")
             fin = self.dateEdit_fecha_fin.date().toString("yyyy-MM-dd")
@@ -152,28 +162,80 @@ class ModificarPelicula(QtWidgets.QWidget):
             clasificacion = self.clasificacion.currentText()
             generos = self.lineEdit_generos.text().split(", ")
 
-            if not nombre or not resumen or not pais or not generos:
-                QMessageBox.warning(self, 'Advertencia', 'Los campos obligatorios no pueden estar vacíos.')
+            # Validar que los campos obligatorios no estén vacíos y mostrar cuál está vacío
+            if not nombre:
+                QMessageBox.warning(self, 'Advertencia', 'El campo "Nombre de la película" está vacío.')
+                return
+            if not resumen:
+                QMessageBox.warning(self, 'Advertencia', 'El campo "Resumen" está vacío.')
+                return
+            if not pais:
+                QMessageBox.warning(self, 'Advertencia', 'El campo "País de origen" está vacío.')
+                return
+            if not generos or generos == ['']:
+                QMessageBox.warning(self, 'Advertencia', 'Debe seleccionar al menos un género.')
+                return
+            if duracion <= 60:
+                QMessageBox.warning(self, 'Advertencia', 'La duración debe ser mayor a 60 minutos.')
                 return
 
+            # Copiar imagen si se seleccionó una nueva
             if self.imagen_seleccionada:
                 nombre_imagen = os.path.basename(self.imagen_seleccionada)
                 nueva_ruta = os.path.join(self.imagenes_dir, nombre_imagen)
                 shutil.copy2(self.imagen_seleccionada, nueva_ruta)
             else:
                 nombre_imagen = self.datos_originales.get('imagen')
+            
+            # Modificar la película en la base de datos primero
+            try:
+                resultado = self.db.modificar_pelicula(id_pelicula, nombre, resumen, pais, estreno, duracion, clasificacion, nombre_imagen, inicio, fin)
 
-            id_pelicula = self.comboBox_peliculas.currentData()
-            self.db.modificar_pelicula(
-                id_pelicula, nombre, resumen, pais, estreno, 
-                duracion, clasificacion, nombre_imagen, inicio, fin
-            )
+                # Verificar que la modificación fue exitosa
+                if not resultado:
+                    raise Exception(f"No se encontró la película con Id {id_pelicula} o no se pudo modificar.")
+                print(f"Película modificada exitosamente con ID: {id_pelicula}")
+            
+            except Exception as e:
+                raise Exception(f"Ocurrió un error al modificar la película: {e}")
+            
+            # Si la película fue modificada correctamente, actualizar los géneros
+            try:
+                print(f"Actualizando géneros para la película con ID: {id_pelicula}")
+                self.actualizar_generos(id_pelicula, generos)
 
-            QMessageBox.information(self, 'Éxito', 'Película modificada exitosamente.')
+            except Exception as e:
+                raise Exception(f"Ocurrió un error al actualizar los géneros: {e}")
+
+            # Mostrar mensaje de éxito si todo funcionó correctamente
+            QMessageBox.information(self, 'Éxito', 'Película modificada y géneros actualizados exitosamente.')
             self.close()
+
         except Exception as e:
             log(e, "error")
             QMessageBox.critical(self, 'Error', f'Ocurrió un error: {e}')
+
+
+
+    def actualizar_generos(self, id_pelicula, generos):
+        """Actualiza los géneros asociados a una película en la base de datos."""
+        try:
+            # Eliminar los géneros existentes para esa película
+            self.db.eliminar_generos_pelicula(id_pelicula)
+
+            # Insertar los nuevos géneros, si no están vacíos
+            for genero in generos:
+                if genero.strip():  # Validamos que el género no esté vacío
+                    id_genero = self.db.obtener_id_genero(genero.strip())
+                    if id_genero is not None:
+                        self.db.insertar_generos(id_pelicula, id_genero)
+
+        except Exception as e:
+            log(e, "error")
+            raise Exception(f'Ocurrió un error al actualizar los géneros: {e}')
+
+
+
 
     def seleccionar_pelicula(self):
         archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar Imagen", "", "Imágenes (*.png *.jpg *.jpeg *.bmp)")
