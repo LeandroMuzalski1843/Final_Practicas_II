@@ -5,6 +5,7 @@ from database.conexion import Database
 from error.logger import log
 from PyQt5.uic import loadUi  
 from views.password import generar_password
+from views.session import UserSession
 class ModificarUsuario(QMainWindow):
     def __init__(self, parent=None):
         super(ModificarUsuario, self).__init__(parent)
@@ -16,6 +17,7 @@ class ModificarUsuario(QMainWindow):
         # Conectar el botón de guardar a la función para agregar usuario
         self.btnCancelar_Modificar.clicked.connect(self.close)
         self.btnAceptar_Modificar.clicked.connect(self.modificar_usuario)
+        self.accion="Modifico un Usuario"
 
         # Configurar el valor por defecto del comboBox
         self.comboBoxUsuario.setCurrentText("Administrador")
@@ -70,8 +72,11 @@ class ModificarUsuario(QMainWindow):
 
         try:
             contrasenia_encriptada=generar_password(nueva_contrasena)
+            sesion= UserSession()
+            id_user = sesion.get_user_id()
             self.db.modificar_usuario(user_id, nuevo_nombre, contrasenia_encriptada, nuevo_rol, fecha_modificacion)
             QMessageBox.information(self, 'Éxito', 'Usuario modificado correctamente.')
+            self.db.registrar_historial_usuario(id_user,self.accion)
             self.close()
         except Exception as e:
             log(e, "error")

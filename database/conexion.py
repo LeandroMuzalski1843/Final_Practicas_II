@@ -27,6 +27,35 @@ class Database:
         if self.db and self.db.is_connected():
             self.db.close()
     
+    def obtener_historial(self):
+        """Obtiene todos los usuarios de la base de datos."""
+        try:
+            self.conneccion()
+            self.cursor.execute("SELECT * FROM historial") 
+            return self.cursor.fetchall()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error durante la consulta: {e}")
+        finally:
+            self.desconeccion()
+    
+    def registrar_historial_usuario(self, id_usuario, accion):
+        """Registra una acción general realizada por el usuario."""
+        try:
+            self.conneccion()
+            fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            query = """
+                INSERT INTO historial (IdUsuario, Fecha_Hora, Accion)
+                VALUES (%s, %s, %s)
+            """
+            self.cursor.execute(query, (id_usuario, fecha_actual, accion))
+            self.db.commit()
+        except Error as e:
+            log(e, "error")
+            raise Exception(f"Error al registrar historial de usuario: {e}")
+        finally:
+            self.desconeccion()
+    
     def obtener_usuario_por_id(self, user_id):
         """Obtiene el usuario por su ID."""
         try:

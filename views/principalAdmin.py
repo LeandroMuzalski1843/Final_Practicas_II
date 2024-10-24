@@ -60,6 +60,7 @@ class MainWindow(QMainWindow):
 
         #Saludo de bienvenida
         session = UserSession()
+        print(session)
         saludo = session.username if session.username else "Usuario"  # Valor por defecto "Usuario"
 
         # Acortar el nombre si es demasiado largo (máximo 10 caracteres)
@@ -110,12 +111,15 @@ class MainWindow(QMainWindow):
         self.cargar_usuarios_en_tabla()
         # Llenar la tabla de Pelis al iniciar
         self.cargar_peliculas_en_tabla()
+        # Llenar la tabla de historial al iniciar
+        self.cargar_Historial_en_tabla()
+
+        
         # Conectar el botón de actualizar con el método cargar_usuarios_en_tabla
         self.btn_actualizarUsuario.clicked.connect(self.cargar_usuarios_en_tabla)
-
-
         # Conectar el botón de actualizar con el método cargar_pelis_en_tabla
         self.btn_actualizar_pelicula.clicked.connect(self.cargar_peliculas_en_tabla)
+        self.btn_actualizarH.clicked.connect(self.cargar_Historial_en_tabla)
 
 
 
@@ -201,6 +205,23 @@ class MainWindow(QMainWindow):
                 self.tableWidget_usuarios.insertRow(row_number)
                 for column_number, data in enumerate(row_data):
                     self.tableWidget_usuarios.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        except Exception as e:
+            log(e, "error")
+            QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de usuarios.')
+    
+    #==============================================================================================================
+    # Configuracion Pagina Historial
+    
+    def cargar_Historial_en_tabla(self):
+        """Carga los usuarios de la base de datos y los muestra en tableWidget_historial."""
+        database = Database()
+        try:
+            historial = database.obtener_historial()
+            self.tableWidget_historial.setRowCount(0)
+            for row_number, row_data in enumerate(historial):
+                self.tableWidget_historial.insertRow(row_number)
+                for column_number, data in enumerate(row_data):
+                    self.tableWidget_historial.setItem(row_number, column_number, QTableWidgetItem(str(data)))
         except Exception as e:
             log(e, "error")
             QMessageBox.critical(self, 'Error', 'No se pudo cargar la tabla de usuarios.')

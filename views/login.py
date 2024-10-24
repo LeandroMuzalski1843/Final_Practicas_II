@@ -16,6 +16,7 @@ class ClaseLogin(QMainWindow):
             # Cargar el diseño de la interfaz de usuario
             loadUi("ui\\login.ui", self)
             self.setup()
+            self.sesion="Inicio Sesion"
 
             # Eliminar la barra de título de la ventana y ajustar la opacidad
             self.setWindowFlags(Qt.FramelessWindowHint) 
@@ -50,12 +51,14 @@ class ClaseLogin(QMainWindow):
 
                 # Verificar la contraseña ingresada contra la encriptada
                 if verifica_password(password, contrasena_encriptada):
+
                     print(grupo)
                     if grupo == "Administrador":
                         # Crea la sesión del usuario
                         session = UserSession()
-                        session.set_user(user, grupo)
+                        session.set_user(id_user,user, grupo)
                         db.actualizar_ultimo_acceso(id_user)
+                        db.registrar_historial_usuario(id_user,self.sesion)
 
                         self.hide()
                         self.main_window = MainWindow()
@@ -65,6 +68,7 @@ class ClaseLogin(QMainWindow):
                         session = UserSession()
                         session.set_user(user, grupo)
                         db.actualizar_ultimo_acceso(id_user)
+                        db.registrar_historial_usuario(id_user,self.sesion)
 
                         self.hide()
                         self.main_window = MainWindowUser()

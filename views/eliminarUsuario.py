@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.uic import loadUi
 from database.conexion import Database
 from error.logger import log
+from views.session import UserSession
 
 class EliminarUsuario(QMainWindow):
     def __init__(self):
@@ -13,6 +14,7 @@ class EliminarUsuario(QMainWindow):
         self.cargar_usuarios()
         self.btnAceptar_eliminar.clicked.connect(self.eliminar_usuario)
         self.btnCancelar_eliminar.clicked.connect(self.close)
+        self.accion="Elimino un Usuario"
 
     def cargar_usuarios(self):
         """Carga los usuarios en el comboBox desde la base de datos."""
@@ -48,8 +50,11 @@ class EliminarUsuario(QMainWindow):
             if reply == QMessageBox.Yes:
                 try:
                     database = Database()
+                    sesion= UserSession()
+                    id_user = sesion.get_user_id()
                     database.eliminar_usuario(user_id)  # Eliminar el usuario de la base de datos
                     QMessageBox.information(self, 'Éxito', f'El usuario "{user_name}" ha sido eliminado correctamente.')
+                    database.registrar_historial_usuario(id_user,self.accion)
                     
                     #Cerrar
                     self.close()

@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 from PyQt5.uic import loadUi
 from database.conexion import Database
 from error.logger import log
+from views.session import UserSession
 
 class EliminarPelicula(QWidget):
     def __init__(self):
@@ -13,6 +14,7 @@ class EliminarPelicula(QWidget):
         self.cargar_peliculas()
         self.btnAceptar_eliminar.clicked.connect(self.eliminar_pelicula)
         self.btnCancelar_eliminar.clicked.connect(self.close)
+        self.accion="Elimino una Pelicula"
 
     def cargar_peliculas(self):
         """Carga las películas desde la base de datos en el QComboBox."""
@@ -44,9 +46,12 @@ class EliminarPelicula(QWidget):
             # Si el usuario confirma la eliminación
             if respuesta == QMessageBox.Yes:
                 try:
+                    sesion= UserSession()
+                    id_user = sesion.get_user_id()
                     self.db.eliminar_pelicula(pelicula_id)
                     self.db.eliminar_generos_pelicula(pelicula_id)
                     QMessageBox.information(self, 'Éxito', 'La película ha sido eliminada exitosamente.')
+                    self.db.registrar_historial_usuario(id_user,self.accion)
                     self.close()
                 except Exception as e:
                     log(e, "error")

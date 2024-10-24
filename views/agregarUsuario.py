@@ -4,6 +4,7 @@ from PyQt5.uic import loadUi
 from database.conexion import Database
 from error.logger import log
 from datetime import datetime
+from views.session import UserSession
 from views.password import generar_password  # Importa la función de encriptación
 
 class AgregarUsuario(QMainWindow):   
@@ -14,6 +15,7 @@ class AgregarUsuario(QMainWindow):
         # Conectar el botón de guardar a la función para agregar usuario
         self.btnAceptar_3.clicked.connect(self.agregar_usuario)
         self.btnCancelar_3.clicked.connect(self.close)
+        self.accion="Creo un Usuario"
 
         # Configurar el valor por defecto del comboBox
         self.comboBoxUsuario.setCurrentText("Administrador")
@@ -50,8 +52,11 @@ class AgregarUsuario(QMainWindow):
         # Insertar usuario en la base de datos
         try:
             db = Database()
+            sesion= UserSession()
+            id_user = sesion.get_user_id()
             db.insertar_usuario(nombre, contrasena_encriptada, rol, fecha_creacion)
             QMessageBox.information(self, 'Éxito', 'Usuario agregado correctamente.')
+            db.registrar_historial_usuario(id_user,self.accion)
 
             self.close()
             # Limpiar los campos después de guardar

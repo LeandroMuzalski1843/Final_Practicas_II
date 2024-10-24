@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDialog, QCheckBox, QDialo
 from database.conexion import Database
 from error.logger import log
 from datetime import datetime
-
+from views.session import UserSession
 # Diálogo para seleccionar géneros
 class GenerosPeliculas(QDialog):
     def __init__(self):
@@ -54,6 +54,7 @@ class AgregarPeliculas(QtWidgets.QWidget):
         self.db = Database()
         self.imagenes_dir = 'movies'
         self.imagen_seleccionada = None
+        self.accion="Creo una Pelicula"
 
         # Establecer el QLineEdit como de solo lectura
         self.lineEdit_generos.setReadOnly(True)
@@ -138,10 +139,13 @@ class AgregarPeliculas(QtWidgets.QWidget):
 
         # Insertar la película en la base de datos
         try:
+            sesion= UserSession()
+            id_user = sesion.get_user_id()
             # Aquí obtendrás el id de la película recién insertada
             id_pelicula = self.db.insertar_pelicula(
                 nombre_pelicula, resumen, pais_origen, fecha_estreno, duracion, clasificacion, nombre_archivo_guardado, fecha_inicio, fecha_fin
             )
+            
 
             if id_pelicula:
                 # Insertar los géneros seleccionados
@@ -150,6 +154,7 @@ class AgregarPeliculas(QtWidgets.QWidget):
                     if id_genero:
                         # Insertar la relación en la tabla peliculagenero
                         self.db.insertar_generos(id_pelicula, id_genero)
+                        
                     else:
                         log(f"No se encontró el género {genero} en la base de datos.", "error")
                         QMessageBox.warning(self, 'Advertencia', f'El género {genero} no se pudo asociar a la película.')
@@ -158,6 +163,8 @@ class AgregarPeliculas(QtWidgets.QWidget):
             else:
                 log("Error: No se pudo obtener el ID de la película después de la inserción.", "error")
                 QMessageBox.critical(self, 'Error', 'No se pudo guardar la película correctamente.')
+            
+            self.db.registrar_historial_usuario(id_user,self.accion)
 
         except Exception as e:
             log(e, "error")
